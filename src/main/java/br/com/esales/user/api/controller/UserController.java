@@ -48,11 +48,6 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
-	@Autowired
-	private TelephoneService telephoneService;
-	
-	private User user;
-	
 	@GetMapping
 	public List<User> ray(User user){
 		
@@ -87,35 +82,6 @@ public class UserController {
 			throw new BusinessException(e.getMessage());
 		}
 	}
-	
-	 @PostMapping("/savee")
-	 private long saveCompleteUser(@RequestBody Map<String, Object> payload) {
-	     User user = new User();
-	     user.setName(payload.get("name").toString());
-
-	     @SuppressWarnings("unchecked")
-	     List<Map<String, Object>> telephones = (List<Map<String, Object>>) payload.get("telephones");
-	     for (Map<String, Object> telObj : telephones) {
-	         Telephone telephone = new Telephone();
-	         telephone.setDdd(telObj.get("ddd").toString());
-	         telephone.setTelephoneNumber(telObj.get("telephoneNumber").toString());
-	         user.addTelephone(telephone);
-	     }
-
-	     userService.save(user);
-
-	     return user.getId(); 
-	 }
-//	
-//	@PostMapping("/save-telephone")
-//	@ResponseStatus(HttpStatus.CREATED)
-//	public Telephone createdTel(@RequestBody Telephone telephone) {
-//		try {
-//			return telephoneService.saver(telephone);
-//		} catch(EntityNotFoundedException e) {
-//			throw new BusinessException(e.getMessage());
-//		}
-//	}
 	
 	@PutMapping("/{userId}")
 	public User update(@PathVariable Long userId,

@@ -28,10 +28,15 @@ public class TelephoneService {
 	@Autowired
 	private TelephoneRepository telephoneRepository;
 	
-	@Autowired
-	private UserRepository userRepository;
-	
-	
+	public Telephone save(Telephone telephone) {
+		Long userId = telephone.getUser().getId();
+		
+		User user = userService.searchUser(userId);
+		
+		telephone.setUser(user);
+		
+		return telephoneRepository.save(telephone);
+	}
 	
 	public void delete(Long telephoneId) {
 		try {

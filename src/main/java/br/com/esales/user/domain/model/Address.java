@@ -47,7 +47,6 @@ public class Address {
 	@Column(name = "UF")
 	private String uf;
 	
-	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USUARIO_ID")
 	private User user;

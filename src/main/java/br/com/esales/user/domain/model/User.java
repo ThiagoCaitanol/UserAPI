@@ -44,6 +44,7 @@ public class User implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
+	@NotNull
 	@EqualsAndHashCode.Include
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -73,23 +74,12 @@ public class User implements Serializable{
 	@Column(name = "STATUS")
 	private Boolean status;
 	
-
-	
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JsonIgnoreProperties("user")
+	@JsonIgnore
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private List<Telephone> telephones = new ArrayList<>();
-	
-	public void addTelephone(Telephone telephone) {
-		telephones.add(telephone);
-		telephone.setUser(this);
-	}
-	
-	public void removeTelephone(Telephone telephone) {
-		telephones.remove(telephone);
-		telephone.setUser(null);
-	}
 
-	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+	@JsonIgnore
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private List<Address> address = new ArrayList<>();
 
 }
