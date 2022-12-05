@@ -1,13 +1,13 @@
 package br.com.esales.user.api.controller;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.esales.user.core.validation.Groups;
 import br.com.esales.user.domain.exception.BusinessException;
 import br.com.esales.user.domain.exception.EntityNotFoundedException;
 import br.com.esales.user.domain.model.Telephone;
@@ -26,7 +26,7 @@ public class TelephoneController {
 	
 	@PostMapping("/save-telephone")
 	
-	public Telephone created(@RequestBody @Valid Telephone telephone) {
+	public Telephone created(@RequestBody @Validated( Groups.RegisterTelephone.class) Telephone telephone) {
 		try {
 			return telephoneService.save(telephone);
 		} catch (EntityNotFoundedException e) {

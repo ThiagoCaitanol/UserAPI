@@ -14,24 +14,20 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.br.CNPJ;
 import org.hibernate.validator.constraints.br.CPF;
-import org.hibernate.validator.group.GroupSequenceProvider;
 import org.springframework.lang.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import br.com.esales.user.Groups;
+import br.com.esales.user.core.validation.Groups;
 import br.com.esales.user.domain.service.CnpjGroup;
 import br.com.esales.user.domain.service.CpfGroup;
 import br.com.esales.user.domain.service.PersonType;
-import br.com.esales.user.domain.service.UserGroupSequenceProvider;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -44,27 +40,27 @@ public class User implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
-	@NotNull
+	@NotNull(groups = Groups.RegisterTelephone.class)
 	@EqualsAndHashCode.Include
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotBlank(groups = Groups.RegisterUser.class)
+	@NotBlank
 	@Column(name = "NOME")
 	private String name;
 	 
-	@NotBlank(message = "E-mail é obrigatorio")
-	@Email(message = "E-mail inválidado")
+	@NotBlank
+	@Email
 	@Column(name = "EMAIL")
 	private String email;
 	
-	@NotNull(message = "Tipo pessoa é obrigatorio")
+	@NotNull
 	@Enumerated(EnumType.STRING)
 	@Column(name = "TIPO_PESSOA")
 	private PersonType personType;
 	
-	@NotBlank(message = "CPF/CNPJ é obrigatorio")
+	@NotBlank
 	@CPF(groups = CpfGroup.class)
 	@CNPJ(groups = CnpjGroup.class)
 	@Column(name = "DOCUMENTO")

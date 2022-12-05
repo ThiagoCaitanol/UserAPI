@@ -9,7 +9,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
+import br.com.esales.user.core.validation.Groups;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -19,19 +22,20 @@ import lombok.NoArgsConstructor;
 @Table(name = "TB_TELEFONE")
 public class Telephone {
 
-
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
+	@NotBlank(groups = Groups.RegisterTelephone.class)
 	@Column(name = "DDD")
 	private String ddd;
 	
+	@NotBlank(groups = Groups.RegisterTelephone.class)
 	@Column(name = "NUMERO")
 	private String telephoneNumber;
 	
-//	@Valid
+	@Valid
+	@NotNull(groups = Groups.RegisterTelephone.class)
 	@ManyToOne
 	@JoinColumn(name = "USUARIO_ID")
 	private User user;

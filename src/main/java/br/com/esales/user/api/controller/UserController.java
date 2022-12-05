@@ -16,6 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.SmartValidator;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -30,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import br.com.esales.user.core.validation.ValidationException;
 import br.com.esales.user.domain.exception.BusinessException;
 import br.com.esales.user.domain.exception.EntityNotFoundedException;
 import br.com.esales.user.domain.model.Telephone;
@@ -47,6 +51,9 @@ public class UserController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private SmartValidator validator;
 	
 	@GetMapping
 	public List<User> ray(User user){
@@ -75,7 +82,6 @@ public class UserController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public User created(@RequestBody @Valid User user) {
 		try {
-			
 			user.setStatus(true);
 			return userService.save(user);			
 		} catch (EntityNotFoundedException e) {
@@ -118,8 +124,18 @@ public class UserController {
 		User currentUser = userService.searchUser(userId);
 		
 		merge(inserts, currentUser, request);
+		validate(currentUser, "user");
 		
 		return update(userId, currentUser);
+	}
+	
+	private void validate(User user, String objectName) {
+		BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(user, objectName);	
+		validator.validate(user, bindingResult);
+		
+		if(bindingResult.hasErrors()) {
+			throw new ValidationException(bindingResult);
+		}
 	}
 	
 	private void merge(Map<String, Object> dataOrigin, User userDestiny, HttpServletRequest request) {
